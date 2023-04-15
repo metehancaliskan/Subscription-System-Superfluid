@@ -1,66 +1,15 @@
-import React, { useState, useEffect } from "react";
-import { Framework } from "@superfluid-finance/sdk-core";
+import { ClientCtx } from "../../context/clientCtx";
+import React, { useState, useEffect, useContext } from "react";
+// import { Framework } from "@superfluid-finance/sdk-core";
 import {
-  Button,
-  Form,
-  FormGroup,
-  FormControl,
-  Spinner,
   Card
 } from "react-bootstrap";
 import { ethers } from "ethers";
 
 let account;
 
-//where the Superfluid logic takes place
-async function deleteExistingFlow(recipient) {
-  const provider = new ethers.providers.Web3Provider(window.ethereum);
-  await provider.send("eth_requestAccounts", []);
-
-  const signer = provider.getSigner();
-
-  const chainId = await window.ethereum.request({ method: "eth_chainId" });
-  const sf = await Framework.create({
-    chainId: Number(chainId),
-    provider: provider
-  });
-
-  const superSigner = sf.createSigner({ signer: signer });
-
-  console.log(signer);
-  console.log(await superSigner.getAddress());
-  const daix = await sf.loadSuperToken("fDAIx");
-
-  console.log(daix);
-
-  try {
-    const deleteFlowOperation = daix.deleteFlow({
-      sender: await signer.getAddress(),
-      receiver: recipient
-      // userData?: string
-    });
-
-    console.log(deleteFlowOperation);
-    console.log("Deleting your stream...");
-
-    const result = await deleteFlowOperation.exec(superSigner);
-    console.log(result);
-
-    console.log(
-      `Congrats - you've just updated a money stream!
-    `
-    );
-  } catch (error) {
-    console.log(
-      "Hmmm, your transaction threw an error. Make sure that this stream does not already exist, and that you've entered a valid Ethereum address!"
-    );
-    console.error(error);
-  }
-}
-
 export const Market = () => {
-  const [recipient, setRecipient] = useState("");
-  const [isButtonLoading, setIsButtonLoading] = useState(false);
+  const { clients, setClients } = useContext(ClientCtx);
   const [currentAccount, setCurrentAccount] = useState("");
 
   const connectWallet = async () => {
@@ -117,39 +66,11 @@ export const Market = () => {
     checkIfWalletIsConnected();
   }, []);
 
-  function calculateFlowRate(amount) {
-    if (typeof Number(amount) !== "number" || isNaN(Number(amount)) === true) {
-      alert("You can only calculate a flowRate based on a number");
-      return;
-    } else if (typeof Number(amount) === "number") {
-      if (Number(amount) === 0) {
-        return 0;
-      }
-      const amountInWei = ethers.BigNumber.from(amount);
-      const monthlyAmount = ethers.utils.formatEther(amountInWei.toString());
-      const calculatedFlowRate = monthlyAmount * 3600 * 24 * 30;
-      return calculatedFlowRate;
-    }
-  }
-
-  function DeleteButton({ isLoading, children, ...props }) {
-    return (
-      <Button variant="success" className="button" {...props}>
-        {isButtonLoading ? <Spinner animation="border" /> : children}
-      </Button>
-    );
-  }
-
-  const handleRecipientChange = (e) => {
-    setRecipient(() => ([e.target.name] = e.target.value));
-  };
-
-  return (
-    <div>
-      <h2>Delete a Flow</h2>
-      {currentAccount === "" ? (
+  return (<>
+    <div className="container m-auto flex gap-4 flex-wrap">
+      <h1 >{currentAccount === "" ? (
         <button id="connectWallet" className="button" onClick={connectWallet}>
-          Connect Wallet
+          Connect Wallet as Subscriber
         </button>
       ) : (
         <Card className="connectedWallet">
@@ -157,36 +78,32 @@ export const Market = () => {
             38
           )}`}
         </Card>
-      )}
-      <Form>
-        <FormGroup className="mb-3">
-          <FormControl
-            name="recipient"
-            value={recipient}
-            onChange={handleRecipientChange}
-            placeholder="Enter recipient address"
-          ></FormControl>
-        </FormGroup>
-        <FormGroup className="mb-3"></FormGroup>
-        <DeleteButton
-          onClick={() => {
-            setIsButtonLoading(true);
-            deleteExistingFlow(recipient);
-            setTimeout(() => {
-              setIsButtonLoading(false);
-            }, 1000);
-          }}
-        >
-          Click to Create Your Stream
-        </DeleteButton>
-      </Form>
-
-      <div className="description">
-        <p>
-          Go to the DeleteFlow.js component and look at the <b>deleteFlow() </b>
-          function to see under the hood
-        </p>
-      </div>
+      )}</h1>
+      
+      {clients.map((client, index) => {
+        return (
+          <div
+            // key={index}
+            // onClick={() => handleCardClick(client)}
+            className="bg-white px-2 py-4 rounded-lg shadow-xl w-min flex flex-col"
+          >
+            <p className="text-lg font-bold"> {client.name}</p>
+            <p className="text-lg font-bold"> {client.symbol}</p>
+            <p className="text-lg"> {client.contract}</p>
+            <p className="text-lg"> $20</p>
+            <div className="flex justify-between mt-4">
+              <button
+                onClick={() => {}}
+                className="text-white bg-green-700 hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 font-medium rounded-full text-sm px-5 py-2.5 text-center mr-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
+              >
+                
+                Buy
+              </button>
+            </div>
+          </div>
+        );
+      })}
     </div>
+    </>
   );
 };

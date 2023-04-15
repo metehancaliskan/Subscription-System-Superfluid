@@ -39,7 +39,7 @@ export const NavBar = () => {
       <nav className="navbar">
         <div className="nav-container">
           <NavLink to="/" className="nav-logo">
-            CodeBucks
+            Subs
             <i className="fas fa-code"></i>
           </NavLink>
 

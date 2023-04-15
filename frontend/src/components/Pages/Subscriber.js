@@ -108,14 +108,9 @@ async function deleteExistingFlow(recipient) {
 export const Subscriber = () => {
   const { clients, setClients } = useContext(ClientCtx);
 
-  const handleCardClick = (client) => {
-    console.log(client);
-  };
 
   // const [recipient, setRecipient] = useState("");
   const [isButtonLoading, setIsButtonLoading] = useState(false);
-  const [flowRate, setFlowRate] = useState("");
-  const [flowRateDisplay, setFlowRateDisplay] = useState("");
   const [currentAccount, setCurrentAccount] = useState("");
 
   const connectWallet = async () => {
@@ -171,44 +166,6 @@ export const Subscriber = () => {
   useEffect(() => {
     checkIfWalletIsConnected();
   }, []);
-
-  function calculateFlowRate(amount) {
-    if (typeof Number(amount) !== "number" || isNaN(Number(amount)) === true) {
-      alert("You can only calculate a flowRate based on a number");
-      return;
-    } else if (typeof Number(amount) === "number") {
-      if (Number(amount) === 0) {
-        return 0;
-      }
-      const amountInWei = ethers.BigNumber.from(amount);
-      const monthlyAmount = ethers.utils.formatEther(amountInWei.toString());
-      const calculatedFlowRate = monthlyAmount * 3600 * 24 * 30;
-      return calculatedFlowRate;
-    }
-  }
-
-  function CreateButton({ isLoading, children, ...props }) {
-    return (
-      <Button variant="success" className="button" {...props}>
-        {isButtonLoading ? <Spinner animation="border" /> : children}
-      </Button>
-    );
-  }
-
-  // const handleRecipientChange = (e) => {
-  //   setRecipient(() => ([e.target.name] = e.target.value));
-  // };
-
-  // const handleFlowRateChange = (e) => {
-  //   setFlowRate(() => ([e.target.name] = e.target.value));
-  //   let newFlowRateDisplay = calculateFlowRate(e.target.value);
-  //   setFlowRateDisplay(newFlowRateDisplay.toString());
-  // };
-
-
-  const handleButtonClick2 = () => {
-    console.log("Button 2 clicked");
-  };
 
   return (<>
     <div className="container m-auto flex gap-4 flex-wrap">
