@@ -12,8 +12,7 @@ import {
 import { ethers } from "ethers";
 
 let account;
-const recipient = "0xA0C0292b8489c29D1e39bE375c4479472a50300f";
-
+// create flow
 async function createNewFlow(recipient, flowRate) {
   const provider = new ethers.providers.Web3Provider(window.ethereum);
   await provider.send("eth_requestAccounts", []);
@@ -50,6 +49,52 @@ async function createNewFlow(recipient, flowRate) {
 
     console.log(
       `Congrats - you've just created a money stream!
+    `
+    );
+  } catch (error) {
+    console.log(
+      "Hmmm, your transaction threw an error. Make sure that this stream does not already exist, and that you've entered a valid Ethereum address!"
+    );
+    console.error(error);
+  }
+}
+
+// delete flow
+async function deleteExistingFlow(recipient) {
+  const provider = new ethers.providers.Web3Provider(window.ethereum);
+  await provider.send("eth_requestAccounts", []);
+
+  const signer = provider.getSigner();
+
+  const chainId = await window.ethereum.request({ method: "eth_chainId" });
+  const sf = await Framework.create({
+    chainId: Number(chainId),
+    provider: provider
+  });
+
+  const superSigner = sf.createSigner({ signer: signer });
+
+  console.log(signer);
+  console.log(await superSigner.getAddress());
+  const daix = await sf.loadSuperToken("fDAIx");
+
+  console.log(daix);
+
+  try {
+    const deleteFlowOperation = daix.deleteFlow({
+      sender: await signer.getAddress(),
+      receiver: recipient
+      // userData?: string
+    });
+
+    console.log(deleteFlowOperation);
+    console.log("Deleting your stream...");
+
+    const result = await deleteFlowOperation.exec(superSigner);
+    console.log(result);
+
+    console.log(
+      `Congrats - you've just updated a money stream!
     `
     );
   } catch (error) {
@@ -165,9 +210,9 @@ export const Subscriber = () => {
     console.log("Button 2 clicked");
   };
 
-  return (
+  return (<>
     <div className="container m-auto flex gap-4 flex-wrap">
-      {currentAccount === "" ? (
+      <h1 >{currentAccount === "" ? (
         <button id="connectWallet" className="button" onClick={connectWallet}>
           Connect Wallet as Subscriber
         </button>
@@ -177,7 +222,8 @@ export const Subscriber = () => {
             38
           )}`}
         </Card>
-      )}
+      )}</h1>
+      
       {clients.map((client, index) => {
         return (
           <div
@@ -187,13 +233,13 @@ export const Subscriber = () => {
           >
             <p className="text-lg font-bold"> {client.name}</p>
             <p className="text-lg font-bold"> {client.symbol}</p>
-            <p className="text-lg"> {client.wallet}</p>
-            <p className="text-lg"> `${calculateFlowRate(client.rate) !== " " ? flowRateDisplay : 0} DAIx/month`</p>
+            <p className="text-lg"> {client.contract}</p>
+            <p className="text-lg"> $2.592 DAIx/month</p>
             <div className="flex justify-between mt-4">
               <button
                 onClick={() => {
                   setIsButtonLoading(true);
-                  createNewFlow(recipient, client.rate);
+                  createNewFlow(client.contract, client.rate);
                   setTimeout(() => {
                     setIsButtonLoading(false);
                   }, 1000);
@@ -204,7 +250,13 @@ export const Subscriber = () => {
                 Subscribe
               </button>
               <button
-                onClick={handleButtonClick2}
+                onClick={() => {
+                  setIsButtonLoading(true);
+                  deleteExistingFlow(client.contract);
+                  setTimeout(() => {
+                    setIsButtonLoading(false);
+                  }, 1000);
+                }}
                 className="text-white bg-red-700 hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 font-medium rounded-full text-sm px-5 py-2.5 text-center mr-2 mb-2 dark:bg-red-600 dark:hover:bg-green-700 dark:focus:ring-red-800"
               >
                 Cancel
@@ -214,5 +266,6 @@ export const Subscriber = () => {
         );
       })}
     </div>
+    </>
   );
 };
