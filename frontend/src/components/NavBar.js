@@ -34,38 +34,6 @@ export const NavBar = () => {
 
   };
 
-  const checkIfWalletIsConnected = async () => {
-    console.log("runs");
-    const { ethereum } = window;
-
-    if (!ethereum) {
-      console.log("Make sure you have metamask!");
-      return;
-    } else {
-      console.log("We have the ethereum object", ethereum);
-    }
-
-    const accounts = await window.ethereum.request({ method: "eth_accounts" });
-    const chain = await window.ethereum.request({ method: "eth_chainId" });
-    let chainId = chain;
-    console.log("chain ID:", chain);
-    console.log("global Chain Id:", chainId);
-    if (accounts.length !== 0) {
-      const account = accounts[0];
-      console.log("Found an authorized account:", account);
-      setCurrentAccount(account);
-      // Setup listener! This is for the case where a user comes to our site
-      // and ALREADY had their wallet connected + authorized.
-      // setupEventListener()
-    } else {
-      console.log("No authorized account found");
-    }
-  };
-
-  // useEffect(() => {
-  //   checkIfWalletIsConnected();
-  // }, []);
-
   return (
     <>
       <nav className="navbar">
@@ -88,32 +56,32 @@ export const NavBar = () => {
             </li>
             <li className="nav-item">
               <NavLink
-                to="/about"
+                to="/market"
                 activeClassName="active"
                 className="nav-links"
                 onClick={handleClick}
               >
-                About
+                Market
               </NavLink>
             </li>
             <li className="nav-item">
               <NavLink
-                to="/blog"
+                to="/subscriber"
                 activeClassName="active"
                 className="nav-links"
                 onClick={handleClick}
               >
-                Clients
+                Subscriber
               </NavLink>
             </li>
             <li className="nav-item">
               <NavLink
-                to="/contact"
+                to="/provider"
                 activeClassName="active"
                 className="nav-links"
                 onClick={handleClick}
               >
-                Create
+                Provider
               </NavLink>
             </li>
             <li className="nav-item">

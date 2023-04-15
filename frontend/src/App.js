@@ -2,9 +2,9 @@ import "./App.css";
 import NavBar from "./components/NavBar";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { Home } from "./components/Pages/Home";
-import { About } from "./components/Pages/About";
-import { Blog } from "./components/Pages/Blog";
-import { Contact } from "./components/Pages/Contact";
+import { Market } from "./components/Pages/Market";
+import { Subscriber } from "./components/Pages/Subscriber";
+import { Provider } from "./components/Pages/Provider";
 import { ClientsProvider } from "./context/clientCtx";
 
 function App() {
@@ -16,9 +16,9 @@ function App() {
           <div className="pages">
             <Routes>
               <Route path="/" element={<Home />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/blog" element={<Blog />} />
-              <Route path="/contact" element={<Contact />} />
+              <Route path="/market" element={<Market />} />
+              <Route path="/subscriber" element={<Subscriber />} />
+              <Route path="/provider" element={<Provider />} />
             </Routes>
           </div>
         </Router>

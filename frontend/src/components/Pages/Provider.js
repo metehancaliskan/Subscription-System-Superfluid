@@ -1,226 +1,104 @@
-import React, { useState, useEffect } from "react";
-import { Framework } from "@superfluid-finance/sdk-core";
-import {
-  Button,
-  Form,
-  FormGroup,
-  FormControl,
-  Spinner,
-  Card
-} from "react-bootstrap";
-// import "./updateFlow.css";
-import { ethers } from "ethers";
+import React, { useState, useContext } from "react";
+import { ClientCtx } from "../../context/clientCtx";
+// require("@nomiclabs/hardhat-ethers");
+// require("@nomiclabs/hardhat-web3");
 
-let account;
-
-//where the Superfluid logic takes place
-async function updateExistingFlow(recipient, flowRate) {
-  const provider = new ethers.providers.Web3Provider(window.ethereum);
-  await provider.send("eth_requestAccounts", []);
-
-  const signer = provider.getSigner();
-
-  const chainId = await window.ethereum.request({ method: "eth_chainId" });
-  const sf = await Framework.create({
-    chainId: Number(chainId),
-    provider: provider
-  });
-
-  const superSigner = sf.createSigner({ signer: signer });
-
-  console.log(signer);
-  console.log(await superSigner.getAddress());
-  const daix = await sf.loadSuperToken("fDAIx");
-
-  console.log(daix);
-
-  try {
-    const updateFlowOperation = daix.updateFlow({
-      sender: await superSigner.getAddress(),
-      receiver: recipient,
-      flowRate: flowRate
-      // userData?: string
-    });
-
-    console.log(updateFlowOperation);
-    console.log("Updating your stream...");
-
-    const result = await updateFlowOperation.exec(superSigner);
-    console.log(result);
-
-    console.log(
-      `Congrats - you've just updated a money stream!
-    `
-    );
-  } catch (error) {
-    console.log(
-      "Hmmm, your transaction threw an error. Make sure that this stream does not already exist, and that you've entered a valid Ethereum address!"
-    );
-    console.error(error);
-  }
-}
 
 export const Provider = () => {
-  const [recipient, setRecipient] = useState("");
-  const [isButtonLoading, setIsButtonLoading] = useState(false);
-  const [flowRate, setFlowRate] = useState("");
-  const [flowRateDisplay, setFlowRateDisplay] = useState("");
-  const [currentAccount, setCurrentAccount] = useState("");
+  const [nameInput, setNameInput] = useState("");
+  const [walletInput, setWalletInput] = useState("");
+  const [symbolInput, setSymbolInput] = useState("");
+  const [rateInput, setRateInput] = useState();
 
-  const connectWallet = async () => {
-    try {
-      const { ethereum } = window;
+  const { clients, setClients } = useContext(ClientCtx);
 
-      if (!ethereum) {
-        alert("Get MetaMask!");
-        return;
-      }
-      const accounts = await ethereum.request({
-        method: "eth_requestAccounts"
-      });
-      console.log("Connected", accounts[0]);
-      setCurrentAccount(accounts[0]);
-      account = currentAccount;
-      // Setup listener! This is for the case where a user comes to our site
-      // and connected their wallet for the first time.
-      // setupEventListener()
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
-  const checkIfWalletIsConnected = async () => {
-    console.log("runs");
-    const { ethereum } = window;
+  // const host = "0xEB796bdb90fFA0f28255275e16936D25d3418603";
+  // const cfa = "0x49e565Ed1bdc17F3d220f72DF0857C26FA83F873";
+  // const acceptedToken = "0x5D8B4C2554aeB7e86F387B4d6c00Ac33499Ed01f";
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+    let object = { name: nameInput, wallet: walletInput, symbol: symbolInput, rate: rateInput };
 
-    if (!ethereum) {
-      console.log("Make sure you have metamask!");
-      return;
-    } else {
-      console.log("We have the ethereum object", ethereum);
-    }
+    console.log(object);
+    
 
-    const accounts = await window.ethereum.request({ method: "eth_accounts" });
-    const chain = await window.ethereum.request({ method: "eth_chainId" });
-    let chainId = chain;
-    console.log("chain ID:", chain);
-    console.log("global Chain Id:", chainId);
-    if (accounts.length !== 0) {
-      account = accounts[0];
-      console.log("Found an authorized account:", account);
-      setCurrentAccount(account);
-      // Setup listener! This is for the case where a user comes to our site
-      // and ALREADY had their wallet connected + authorized.
-      // setupEventListener()
-    } else {
-      console.log("No authorized account found");
-    }
-  };
+    setClients([...clients, object]);
 
-  useEffect(() => {
-    checkIfWalletIsConnected();
-  }, []);
+    //set user's wallet adress and the input field values to realted form object.
 
-  // function calculateFlowRate(amount) {
-  //   if (typeof Number(amount) !== "number" || isNaN(Number(amount)) === true) {
-  //     alert("You can only calculate a flowRate based on a number");
-  //     return;
-  //   } else if (typeof Number(amount) === "number") {
-  //     if (Number(amount) === 0) {
-  //       return 0;
-  //     }
-  //     const amountInWei = ethers.BigNumber.from(amount);
-  //     const monthlyAmount = ethers.utils.formatEther(amountInWei.toString());
-  //     const calculatedFlowRate = monthlyAmount * 3600 * 24 * 30;
-  //     return calculatedFlowRate;
-  //   }
-  // }
-  
-  function calculateFlowRate(amount) {
-    if (typeof Number(amount) !== "number" || isNaN(Number(amount)) === true) {
-      alert("You can only calculate a flowRate based on a number");
-      return;
-    } else if (typeof Number(amount) === "number") {
-      if (Number(amount) === 0) {
-        return 0;
-      }
-      const amountInWei = ethers.BigNumber.from(amount);
-      const monthlyAmount = ethers.utils.formatEther(amountInWei.toString());
-      const calculatedFlowRate = monthlyAmount * 3600 * 24 * 30;
-      return calculatedFlowRate;
-    }
-  }
-
-  function UpdateButton({ isLoading, children, ...props }) {
-    return (
-      <Button variant="success" className="button" {...props}>
-        {isButtonLoading ? <Spinner animation="border" /> : children}
-      </Button>
-    );
-  }
-
-  const handleRecipientChange = (e) => {
-    setRecipient(() => ([e.target.name] = e.target.value));
-  };
-
-  const handleFlowRateChange = (e) => {
-    setFlowRate(() => ([e.target.name] = e.target.value));
-    let newFlowRateDisplay = calculateFlowRate(e.target.value);
-    setFlowRateDisplay(newFlowRateDisplay.toString());
+    //use the input field values as formInput
+    //set the new client into the clients Context like this:
+    //setClients(...clients, {NEW CLIENT OBJECT})
   };
 
   return (
     <div>
-      <h2>Update a Flow</h2>
-      {currentAccount === "" ? (
-        <button id="connectWallet" className="button" onClick={connectWallet}>
-          Connect Wallet
-        </button>
-      ) : (
-        <Card className="connectedWallet">
-          {`${currentAccount.substring(0, 4)}...${currentAccount.substring(
-            38
-          )}`}
-        </Card>
-      )}
-      <Form>
-        <FormGroup className="mb-3">
-          <FormControl
-            name="recipient"
-            value={recipient}
-            onChange={handleRecipientChange}
-            placeholder="Enter recipient address"
-          ></FormControl>
-        </FormGroup>
-        <FormGroup className="mb-3">
-          <FormControl
-            name="flowRate"
-            value={flowRate}
-            onChange={handleFlowRateChange}
-            placeholder="Enter a flowRate in wei/second"
-          ></FormControl>
-        </FormGroup>
-        <UpdateButton
-          onClick={() => {
-            setIsButtonLoading(true);
-            updateExistingFlow(recipient, flowRate);
-            setTimeout(() => {
-              setIsButtonLoading(false);
-            }, 1000);
-          }}
-        >
-          Click to Create Your Stream
-        </UpdateButton>
-      </Form>
-
-      <div className="description">
-        <div className="calculation">
-          <p>Your flow will be equal to:</p>
-          <p>
-            <b>${flowRateDisplay !== " " ? flowRateDisplay : 0}</b> DAIx/month
-          </p>
+      <form
+        className="flex flex-col mt-2 gap-2 container m-auto"
+        onSubmit={handleFormSubmit}
+      >
+        <div className="flex justify-center gap-8">
+          <div className="flex flex-col">
+            <label htmlFor="wallet" className="text-start  font-semibold">
+              Wallet
+            </label>
+            <input
+              className="rounded-2xl"
+              id="wallet"
+              type="text"
+              onChange={(e) => {
+                setWalletInput(e.target.value);
+              }}
+            ></input>
+          </div>
+          <div className="flex flex-col">
+            <label htmlFor="name" className="text-start  font-semibold">
+              Name
+            </label>
+            <input
+              className="rounded-2xl"
+              id="name"
+              type="text"
+              onChange={(e) => {
+                setNameInput(e.target.value);
+              }}
+            ></input>
+          </div>
+          <div className="flex flex-col">
+            <label htmlFor="symbol" className="text-start  font-semibold">
+              Symbol
+            </label>
+            <input
+              className="rounded-2xl"
+              id="symbol"
+              type="text"
+              onChange={(e) => {
+                setSymbolInput(e.target.value);
+              }}
+            ></input>
+          </div>
+          <div className="flex flex-col">
+            <label htmlFor="name" className="text-start  font-semibold">
+              FlowRate
+            </label>
+            <input
+              className="rounded-2xl"
+              id="rate"
+              type="number"
+              onChange={(e) => {
+                setRateInput(e.target.value);
+              }}
+            ></input>
+          </div>
         </div>
-      </div>
+        <button
+          type="submit"
+          className="w-36 self-center border rounded-md bg-slate-700 text-white hover:scale-105 transition-all active:bg-white active:text-slate-700"
+        >
+          Submit
+        </button>
+      </form>
     </div>
   );
 };

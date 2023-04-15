@@ -59,7 +59,7 @@ async function createNewFlow(recipient, flowRate) {
   }
 }
 
-export const About = () => {
+export const Market = () => {
   const [recipient, setRecipient] = useState("");
   const [isButtonLoading, setIsButtonLoading] = useState(false);
   const [flowRate, setFlowRate] = useState("");
