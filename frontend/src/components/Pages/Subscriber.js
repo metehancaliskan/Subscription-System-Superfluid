@@ -33,7 +33,6 @@ async function createNewFlow(recipient, flowRate) {
       sender: await superSigner.getAddress(),
       receiver: recipient,
       flowRate: flowRate
-      // userData?: string
     });
 
     console.log(createFlowOperation);
@@ -104,7 +103,6 @@ export const Subscriber = () => {
   const { clients, setClients } = useContext(ClientCtx);
 
 
-  // const [recipient, setRecipient] = useState("");
   const [isButtonLoading, setIsButtonLoading] = useState(false);
   const [currentAccount, setCurrentAccount] = useState("");
 
@@ -150,9 +148,6 @@ export const Subscriber = () => {
       account = accounts[0];
       console.log("Found an authorized account:", account);
       setCurrentAccount(account);
-      // Setup listener! This is for the case where a user comes to our site
-      // and ALREADY had their wallet connected + authorized.
-      // setupEventListener()
     } else {
       console.log("No authorized account found");
     }
@@ -163,17 +158,19 @@ export const Subscriber = () => {
   }, []);
 
   return (<>
-      <h1 className="flex justify-center mb-10">{checkIfWalletIsConnected() ? (
+      <h1 className="flex justify-center mb-10">
+      {currentAccount === "" ? (
         <button id="connectWallet" className="button" onClick={connectWallet}>
           Connect Wallet as Subscriber
         </button>
       ) : (
-        <Card className="flex justify-center mb-10">
+        <Card className="connectedWallet">
           {`${currentAccount.substring(0, 4)}...${currentAccount.substring(
             38
           )}`}
         </Card>
-      )}</h1>
+      )}
+      </h1>
     <div className="container m-auto grid gap-4 grid-cols-2">
       
       {clients.map((client, index) => {
