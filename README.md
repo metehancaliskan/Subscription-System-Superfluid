@@ -55,10 +55,8 @@ In order to verify the contract, you would require an etherscan key and passin t
 ## 2. Frontend
 
 ```bash
-### yarn
-yarn
-
-### npm
-npm i
+cd frontend
+npm install
+npm start
 ```
 
