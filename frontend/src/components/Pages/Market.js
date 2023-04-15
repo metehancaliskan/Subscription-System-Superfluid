@@ -67,25 +67,25 @@ export const Market = () => {
   }, []);
 
   return (<>
-    <div className="container m-auto flex gap-4 flex-wrap">
-      <h1 >{currentAccount === "" ? (
+      <h1 className="flex justify-center mb-10">{checkIfWalletIsConnected() ? (
         <button id="connectWallet" className="button" onClick={connectWallet}>
-          Connect Wallet as Subscriber
+          Connect Wallet as Investor
         </button>
       ) : (
-        <Card className="connectedWallet">
+        <Card className="flex justify-center mb-10">
           {`${currentAccount.substring(0, 4)}...${currentAccount.substring(
             38
           )}`}
         </Card>
       )}</h1>
+    <div className="container m-auto grid gap-4 grid-cols-2">
       
       {clients.map((client, index) => {
         return (
           <div
             // key={index}
             // onClick={() => handleCardClick(client)}
-            className="bg-white px-2 py-4 rounded-lg shadow-xl w-min flex flex-col"
+            className="bg-white px-2 py-4 rounded-lg shadow-xl w-full flex flex-col"
           >
             <p className="text-lg font-bold"> {client.name}</p>
             <p className="text-lg font-bold"> {client.symbol}</p>

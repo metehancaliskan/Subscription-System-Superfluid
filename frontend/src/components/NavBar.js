@@ -84,13 +84,6 @@ export const NavBar = () => {
                 Provider
               </NavLink>
             </li>
-            <li className="nav-item">
-        <button id="connectWallet" className="button" onClick={connectWallet}>
-          {walletConnected ? `${currentAccount.substring(0, 4)}...${currentAccount.substring(
-            38
-          )}` : "Connect Wallet"}
-        </button>
-            </li>
           </ul>
           <div className="nav-icon" onClick={handleClick}>
             <i className={click ? "fas fa-times" : "fas fa-bars"}></i>
