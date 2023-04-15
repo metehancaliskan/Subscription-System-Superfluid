@@ -52,3 +52,13 @@ In order to verify the contract, you would require an etherscan key and passin t
 #### Create Flow
 ```npx hardhat run scripts/createFlow.js```
 
+## 2. Frontend
+
+```bash
+### yarn
+yarn
+
+### npm
+npm i
+```
+
