@@ -746,26 +746,7 @@ export const Market = () => {
       setTransactionStatus("Error occurred during the transaction.");
     }
   };
-  // async function transferERC721Token(fromAddress, toAddress, tokenId) {
-  //   const sender = "0x5BD7709F0aB8600a85629B6229EE5117468A392e";
-  //   const gasPrice = await web3.eth.getGasPrice();
-  //   const contractAddress = "0xC9651FAeadd5E9A20C4e9Ef4Fcda6dC4081e99c6";
-  
-  //   const txData = {
-  //     from: sender,
-  //     to: contractAddress,
-  //     gasPrice,
-  //     data: contract.methods.transferFrom(fromAddress, toAddress, tokenId).encodeABI()
-  //   };
-  
-  //   const gas = await web3.eth.estimateGas(txData);
-  //   txData.gas = gas;
-  
-  //   const signedTransaction = await web3.eth.accounts.signTransaction(txData, "bc049dcc27169ff1e648744437b45d9f9db9bae54aeaa05f7cf81a8ee6e3cdd2");
-  //   const receipt = await web3.eth.sendSignedTransaction(signedTransaction.rawTransaction);
-  
-  //   return receipt;
-  // }
+
 
   const connectWallet = async () => {
     try {
