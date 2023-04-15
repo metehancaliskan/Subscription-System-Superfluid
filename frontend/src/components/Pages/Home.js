@@ -1,4 +1,5 @@
 import React from "react";
+import sfImage from "../Superfluid-logo.jpeg"
 
 const styles = {
   container: {
@@ -8,21 +9,24 @@ const styles = {
     textAlign: "center",
   },
   image: {
-    maxWidth: "100px",
+    width: "400px",
     marginTop: "20px",
   },
+  title: {
+    fontSize: "48px"
+  }
 };
 
 export const Home = () => {
   return (
     <div style={styles.container}>
-      <h1>Welcome to Subs</h1>
+      <h1 style={styles.title}>Welcome to <b>Subs</b></h1>
       <p>
-        Subs is a subscription system which is developed with tradeable cashflow
+      <b>Subs</b> is a subscription system which is developed with tradeable cashflow
         contract powered by Superfluid
       </p>
       <img
-        src="https://www.google.com/url?https://github.com/superfluid-finance/protocol-monorepo/blob/HEAD/sf-logo.png=i&url=https%3A%2F%2Fwww.npmjs.com%2Fpackage%2F%40superfluid-finance%2Fsdk-core%2Fv%2F0.3.1-dev.9212d2a.0&psig=AOvVaw24uGic3qQKALZOfnoHDGun&ust=1681637857269000&source=images&cd=vfe&ved=0CBEQjRxqFwoTCOC-lKvLq_4CFQAAAAAdAAAAABAE"
+        src={sfImage}
         style={styles.image}
       />
     </div>
