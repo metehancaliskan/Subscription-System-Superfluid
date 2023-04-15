@@ -6,7 +6,7 @@ import { ClientCtx } from "../../context/clientCtx";
 
 export const Provider = () => {
   const [nameInput, setNameInput] = useState("");
-  const [walletInput, setWalletInput] = useState("");
+  const [contractInput, setContractInput] = useState("");
   const [symbolInput, setSymbolInput] = useState("");
   const [rateInput, setRateInput] = useState();
 
@@ -18,7 +18,7 @@ export const Provider = () => {
   // const acceptedToken = "0x5D8B4C2554aeB7e86F387B4d6c00Ac33499Ed01f";
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    let object = { name: nameInput, wallet: walletInput, symbol: symbolInput, rate: rateInput };
+    let object = { name: nameInput, contract: contractInput, symbol: symbolInput, rate: rateInput };
 
     console.log(object);
     
@@ -40,15 +40,15 @@ export const Provider = () => {
       >
         <div className="flex justify-center gap-8">
           <div className="flex flex-col">
-            <label htmlFor="wallet" className="text-start  font-semibold">
-              Wallet
+            <label htmlFor="contract" className="text-start  font-semibold">
+              contract address
             </label>
             <input
               className="rounded-2xl"
-              id="wallet"
+              id="contract"
               type="text"
               onChange={(e) => {
-                setWalletInput(e.target.value);
+                setContractInput(e.target.value);
               }}
             ></input>
           </div>
